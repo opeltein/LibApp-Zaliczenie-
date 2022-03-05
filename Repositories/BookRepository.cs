@@ -17,6 +17,12 @@ namespace LibApp.Repositories
         }
 
         Book GetBookById(int id) => _context.Books.Find(id);
+        public Book Get(int id)
+        {
+            var book = _context.Books.Find(id);
+            book.Genre = _context.Genre.Find(book.GenreId);
+            return book;
+        }
         void AddBook(Book book) => _context.Books.Add(book);
         void UpdateBook(Book book) => _context.Books.Update(book);
         void DeleteBook(int id) => _context.Books.Remove(GetBookById(id));
