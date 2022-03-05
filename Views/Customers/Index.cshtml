@@ -2,7 +2,7 @@
     ViewBag.Title = "Customers";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+@inject UserManager<IdentifyUser> UserManager
 <h2>Customers</h2>
 
 <p>
@@ -14,7 +14,7 @@
     <tr>
         <th>Customer</th>
         <th>Discount Rate</th>
-        <th>Delete</th>
+        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
@@ -44,7 +44,14 @@
                     {
                         data: "id",
                         render: function (data) {
-                            return "<button class='btn btn-secondary js-delete' data-customer-id=" + data + ">Delete</button>";
+                            let delete= "<button class='btn btn-secondary js-details' data-customer-id=" + data + ">Details</button>" + 
+                            let details= "<a href='/Customers/Details/"+data+"'/>"
+                            @if(User.IsInRole("Administrator")){
+                                <text>return delete + details;</text>
+                                }
+                                else{
+                                return details;
+                                }     
                         }
                     }
                 ]
