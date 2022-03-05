@@ -1,32 +1,47 @@
 @model IEnumerable<LibApp.Models.Book>
-
 @{
     ViewBag.Title = "Books";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Books</h2>
+    @inject UserManager<IdentifyUser>
+    UserManager
 
-<p>
-    <a class="btn btn-primary" asp-action="New">New Book</a>
-</p>
+    <h2>Books</h2>
 
-<table class="table table-bordered table-hover">
-    <thead>
-    <tr>
-        <th>Book</th>
-        <th colspan="2">Genre</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var book in Model)
+    <p>
+        <a class="btn btn-primary" asp-action="New">New Book</a>
+    </p>
+
+    <table id="book" class="table table-hover">
+        <thead>
+            <tr>
+                <th>Book</th>
+                <th>Discount Rate</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Book</th>
+                <th colspan="2">Genre</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in Model)
     {
-        <tr>
-            <td><a asp-action="Edit" asp-route-id="@book.Id">@Html.DisplayFor(modelItem => book.Name)</a></td>
-            <td>@Html.DisplayFor(modelItem => book.Genre.Name)</td>
-            <td><a asp-action="Details" asp-route-id="@book.Id">Details</a></td>
+            <tr>
+                <td><a asp-action="Edit" asp-route-id="@book.Id">@Html.DisplayFor(modelItem => book.Name)</a></td>
+                <td>@Html.DisplayFor(modelItem => book.Genre.Name)</td>
+                <td><a asp-action="Details" asp-route-id="@book.Id">Details</a></td>
 
-        </tr>
+            </tr>
     }
-    </tbody>
-</table>
+        </tbody>
+    </table>
