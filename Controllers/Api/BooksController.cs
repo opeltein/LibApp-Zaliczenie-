@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoMaper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,7 +18,6 @@ using HttpGetAttribute = Microsoft.AspNetCore.Mvc.HttpGetAttribute;
 using HttpPostAttribute = Microsoft.AspNetCore.Mvc.HttpPostAttribute;
 using HttpPutAttribute = Microsoft.AspNetCore.Mvc.HttpPutAttribute;
 using RouteAttribute = Microsoft.AspNetCore.Mvc.RouteAttribute;
-
 namespace LibApp.Controllers.Api
 {
     [Route("api/[controller]")]
@@ -25,7 +25,6 @@ namespace LibApp.Controllers.Api
     public class BooksController : ControllerBase
     {
         private readonly IBookRepository _bookRepository;
-
         public BooksController(IBookRepository bookRepository, IMapper mapper)
         {
             _bookRepository = bookRepository;
@@ -34,11 +33,11 @@ namespace LibApp.Controllers.Api
 
         // GET /api/books
         [HttpGet]
+        [Authorize]
         public IActionResult GetBooks()
         {
             var books = _bookRepository.GetBooks()
                                 .Select(_mapper.Map<Book, BookDto>);
-
             return Ok(books);
         }
         // GET /api/books/{id}
@@ -47,17 +46,16 @@ namespace LibApp.Controllers.Api
         public IActionResult Get(int id)
         {
             var book = _bookRepository.Get(id);
-
             if (book == null)
             {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
-
             return Ok(_mapper.Map<BookDto>(book));
         }
 
         // POST /api/books
         [HttpPost]
+        [Authorize(Roles = "StoreManager,Owner")]
         public IActionResult Add(Book bookDto)
         {
             if (!ModelState.IsValid)
@@ -68,11 +66,11 @@ namespace LibApp.Controllers.Api
             _bookRepository.Add(book);
             _bookRepository.Save();
             bookDto.Id = book.Id;
-
             return CreatedAtRoute(nameof(Get), new { id = bookDto.Id }, bookDto);
         }
 
         // PUT /api/books
+        [Authorize(Roles = "StoreManager,Owner")]
         [HttpPut("{id}")]
         public void Update(int id, BookDto bookDto)
         {
@@ -86,12 +84,12 @@ namespace LibApp.Controllers.Api
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
             _mapper.Map(bookDto, bookInDb);
-
             _bookRepository.Save();
         }
 
         // DELETE /api/books{id}
         [HttpDelete]
+        [Authorize(Roles = "StoreManager,Owner")]
         [Route("{id}")]
         public IActionResult Delete(int id)
         {
@@ -103,6 +101,5 @@ namespace LibApp.Controllers.Api
             }
             else return NotFound();
         }
-
     }
 }
