@@ -14,15 +14,17 @@ namespace LibApp.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public BooksController(ApplicationDbContext context)
+        private readonly IBookRepository _bookRepository;
+        public BooksController(ApplicationDbContext context, IBookRepository bookRepository)
         {
             _context = context;
+            _bookRepository = bookRepository;
         }
 
         public IActionResult Index()
         {
-            var books = _context.Books
-                .Include(b => b.Genre)
+            var books = _bookRepository.GetBooks();
+
                 .ToList();
 
             return View(books);
@@ -95,7 +97,13 @@ namespace LibApp.Controllers
             return RedirectToAction("Index", "Books");
         }
 
+        [HttpGet]
+        [Route("api/books")]
 
+        public GetBook IList<Book>()
+        {
+            return _bookRepository.GetBooks().ToList();
+        }
 
 
     }

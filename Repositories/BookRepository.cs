@@ -13,7 +13,7 @@ namespace LibApp.Repositories
         }
         public IEnumerable<Book> GetBooks()
         {
-            return _context.Books;
+            return _context.Books.Include(b => b.Genre);
         }
 
         Book GetBookById(int id) => _context.Books.Find(id);
